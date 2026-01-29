@@ -7,7 +7,7 @@ set -e
 
 # Variables
 RESOURCE_GROUP="rg-containerapp-poc"
-LOCATION="eastus"
+LOCATION="centralus"
 APP_NAME="pocapp"
 
 echo "========================================="

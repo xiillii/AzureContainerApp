@@ -91,7 +91,7 @@ resource filesDatabase 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
 
 // Storage Account for files
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
-  name: '${appName}storage${uniqueString(resourceGroup().id)}'
+  name: 'st${uniqueString(resourceGroup().id)}' // Max 24 chars: st + 13 char hash = 15 chars
   location: location
   sku: {
     name: 'Standard_LRS'
@@ -149,7 +149,18 @@ resource tasksApiApp 'Microsoft.App/containerApps@2023-05-01' = {
         targetPort: 8080
         transport: 'http'
       }
+      registries: [
+        {
+          server: acr.properties.loginServer
+          username: acr.listCredentials().username
+          passwordSecretRef: 'acr-password'
+        }
+      ]
       secrets: [
+        {
+          name: 'acr-password'
+          value: acr.listCredentials().passwords[0].value
+        }
         {
           name: 'sql-connection-string'
           value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=TasksDb;Persist Security Info=False;User ID=${sqlServer.properties.administratorLogin};Password=P@ssw0rd123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
@@ -217,7 +228,18 @@ resource filesApiApp 'Microsoft.App/containerApps@2023-05-01' = {
         targetPort: 8080
         transport: 'http'
       }
+      registries: [
+        {
+          server: acr.properties.loginServer
+          username: acr.listCredentials().username
+          passwordSecretRef: 'acr-password'
+        }
+      ]
       secrets: [
+        {
+          name: 'acr-password'
+          value: acr.listCredentials().passwords[0].value
+        }
         {
           name: 'sql-connection-string'
           value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=FilesDb;Persist Security Info=False;User ID=${sqlServer.properties.administratorLogin};Password=P@ssw0rd123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
@@ -297,7 +319,18 @@ resource tasksWebApp 'Microsoft.App/containerApps@2023-05-01' = {
         targetPort: 8080
         transport: 'http'
       }
+      registries: [
+        {
+          server: acr.properties.loginServer
+          username: acr.listCredentials().username
+          passwordSecretRef: 'acr-password'
+        }
+      ]
       secrets: [
+        {
+          name: 'acr-password'
+          value: acr.listCredentials().passwords[0].value
+        }
         {
           name: 'jwt-secret'
           value: jwtSecret
@@ -345,7 +378,18 @@ resource filesWebApp 'Microsoft.App/containerApps@2023-05-01' = {
         targetPort: 8080
         transport: 'http'
       }
+      registries: [
+        {
+          server: acr.properties.loginServer
+          username: acr.listCredentials().username
+          passwordSecretRef: 'acr-password'
+        }
+      ]
       secrets: [
+        {
+          name: 'acr-password'
+          value: acr.listCredentials().passwords[0].value
+        }
         {
           name: 'jwt-secret'
           value: jwtSecret
