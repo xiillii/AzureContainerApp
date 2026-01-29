@@ -2,21 +2,22 @@ version: '3.8'
 
 services:
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/azure-sql-edge:latest
     container_name: poc-sqlserver
+    platform: linux/arm64
     environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=P@ssw0rd123!
-      - MSSQL_PID=Developer
+      - ACCEPT_EULA=1
+      - MSSQL_SA_PASSWORD=P@ssw0rd123!
     ports:
       - "1433:1433"
     volumes:
       - sqldata:/var/opt/mssql
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "P@ssw0rd123!" -Q "SELECT 1" || exit 1
+      test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/localhost/1433' || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite

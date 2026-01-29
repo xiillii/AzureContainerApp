@@ -58,9 +58,11 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Application Insights
-builder.Services.AddOpenTelemetry()
-    .UseAzureMonitor();
+// Application Insights (Optional - only if connection string is configured)
+if (!string.IsNullOrEmpty(builder.Configuration["ApplicationInsights:ConnectionString"]))
+{
+    builder.Services.AddApplicationInsightsTelemetry();
+}
 
 var app = builder.Build();
 
