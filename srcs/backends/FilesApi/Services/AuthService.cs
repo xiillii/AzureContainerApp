@@ -25,10 +25,25 @@ public class AuthService : IAuthService
 
     public async Task<LoginResponse?> LoginAsync(LoginRequest request)
     {
+        // For demo purposes, using simple password validation
         var user = await Task.Run(() => _context.Users.FirstOrDefault(u => u.Username == request.Username));
         
         if (user == null)
             return null;
+
+        // Simple password validation (for demo - in production use BCrypt.Net.Verify)
+        var validPasswords = new Dictionary<string, string>
+        {
+            { "demo", "demo123" },
+            { "admin", "admin123" },
+            { "user", "user123" }
+        };
+
+        if (!validPasswords.TryGetValue(user.Username, out var expectedPassword) || 
+            request.Password != expectedPassword)
+        {
+            return null;
+        }
 
         var token = GenerateJwtToken(user);
         

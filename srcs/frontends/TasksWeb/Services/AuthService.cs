@@ -22,21 +22,35 @@ public class AuthService
     {
         try
         {
+            _logger.LogInformation("Attempting login for user: {Username}", username);
+            
             var response = await _httpClient.PostAsJsonAsync("/api/auth/login", new
             {
                 username,
                 password
             });
 
+            _logger.LogInformation("Login response status: {StatusCode}", response.StatusCode);
+
             if (response.IsSuccessStatusCode)
             {
-                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-                if (result != null)
+                var responseContent = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation("Login response body: {Response}", responseContent);
+                
+                var result = System.Text.Json.JsonSerializer.Deserialize<LoginResponse>(responseContent, 
+                    new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                
+                if (result != null && !string.IsNullOrEmpty(result.Token))
                 {
+                    _logger.LogInformation("Login successful, token received");
                     _token = result.Token;
                     _httpClient.DefaultRequestHeaders.Authorization = 
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
                     return true;
+                }
+                else
+                {
+                    _logger.LogWarning("Login response was successful but token was empty or null");
                 }
             }
 
