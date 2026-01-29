@@ -1,10 +1,28 @@
 using FilesWeb.Components;
+using FilesWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// Configure HttpClient for API calls
+var apiBaseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl") ?? "http://files-api:8080";
+builder.Services.AddHttpClient<FilesApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+
+// Register services
+builder.Services.AddScoped<AuthService>(sp =>
+{
+    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+    var httpClient = httpClientFactory.CreateClient();
+    httpClient.BaseAddress = new Uri(apiBaseUrl);
+    var logger = sp.GetRequiredService<ILogger<AuthService>>();
+    return new AuthService(httpClient, logger);
+});
 
 var app = builder.Build();
 

@@ -39,18 +39,27 @@ public class FilesDbContext : DbContext
             new User
             {
                 Id = 1,
-                Username = "admin",
-                Email = "admin@example.com",
+                Username = "demo",
+                Email = "demo@example.com",
                 PasswordHash = "$2a$11$vZLp.X5K3B3qN8I3KJ9YpO8K9xBxQh8gLI5Y7zR8pF9h1L8N2P3Q4",
-                Role = "Admin",
+                Role = "User",
                 CreatedAt = DateTime.UtcNow
             },
             new User
             {
                 Id = 2,
+                Username = "admin",
+                Email = "admin@example.com",
+                PasswordHash = "$2a$11$vZLp.X5K3B3qN8I3KJ9YpO8K9xBxQh8gLI5Y7zR8pF9h1L8N2P3Q5",
+                Role = "Admin",
+                CreatedAt = DateTime.UtcNow
+            },
+            new User
+            {
+                Id = 3,
                 Username = "user",
                 Email = "user@example.com",
-                PasswordHash = "$2a$11$vZLp.X5K3B3qN8I3KJ9YpO8K9xBxQh8gLI5Y7zR8pF9h1L8N2P3Q5",
+                PasswordHash = "$2a$11$vZLp.X5K3B3qN8I3KJ9YpO8K9xBxQh8gLI5Y7zR8pF9h1L8N2P3Q6",
                 Role = "User",
                 CreatedAt = DateTime.UtcNow
             }
