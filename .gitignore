@@ -1,0 +1,45 @@
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.vscode/
+*.log
+
+# Docker
+.dockerignore
+
+# Azure
+*.publish.xml
+*.pubxml
+*.azurePubxml
+
+# Entity Framework
+Migrations/
+
+# User-specific files
+appsettings.Development.json
+*.db
+*.db-shm
+*.db-wal
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Environment files
+.env
+.env.local
+
+# Azurite data
+azurite-data/
+
+# Docker volumes
+sqldata/

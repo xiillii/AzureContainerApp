@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: poc-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=P@ssw0rd123!
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqldata:/var/opt/mssql
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "P@ssw0rd123!" -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: poc-azurite
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    volumes:
+      - azurite-data:/data
+    command: "azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 -l /data"
+
+  tasks-api:
+    build:
+      context: ./srcs
+      dockerfile: backends/TasksApi/Dockerfile
+    container_name: poc-tasks-api
+    ports:
+      - "5001:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=TasksDb;User Id=sa;Password=P@ssw0rd123!;TrustServerCertificate=True;MultipleActiveResultSets=true
+      - Jwt__Secret=your-secret-key-min-32-chars-long!-change-in-production
+      - Jwt__Issuer=TasksApi
+      - Jwt__Audience=TasksWebApp
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+  files-api:
+    build:
+      context: ./srcs
+      dockerfile: backends/FilesApi/Dockerfile
+    container_name: poc-files-api
+    ports:
+      - "5002:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=FilesDb;User Id=sa;Password=P@ssw0rd123!;TrustServerCertificate=True;MultipleActiveResultSets=true
+      - Jwt__Secret=your-secret-key-min-32-chars-long!-change-in-production
+      - Jwt__Issuer=FilesApi
+      - Jwt__Audience=FilesWebApp
+      - AzureStorage__ConnectionString=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;
+      - AzureStorage__ContainerName=files
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      azurite:
+        condition: service_started
+
+  tasks-web:
+    build:
+      context: ./srcs
+      dockerfile: frontends/TasksWeb/Dockerfile
+    container_name: poc-tasks-web
+    ports:
+      - "5003:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TasksApiUrl=http://tasks-api:8080
+      - Jwt__Secret=your-secret-key-min-32-chars-long!-change-in-production
+    depends_on:
+      - tasks-api
+
+  files-web:
+    build:
+      context: ./srcs
+      dockerfile: frontends/FilesWeb/Dockerfile
+    container_name: poc-files-web
+    ports:
+      - "5004:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - FilesApiUrl=http://files-api:8080
+      - Jwt__Secret=your-secret-key-min-32-chars-long!-change-in-production
+    depends_on:
+      - files-api
+
+volumes:
+  sqldata:
+  azurite-data:
