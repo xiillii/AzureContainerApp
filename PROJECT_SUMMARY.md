@@ -11,6 +11,7 @@ Todos los requerimientos han sido implementados exitosamente.
 - ✅ **Sistema de microservicios** desplegable en Azure Container Apps
 - ✅ **2 Frontends .NET 8.x** (TasksWeb, FilesWeb) con **acceso desde Internet**
 - ✅ **2 Backends .NET 8.x** (TasksApi, FilesApi) - uno para cada frontend
+- ✅ **File Processor Job** - job programado que procesa archivos cada 10 minutos
 - ✅ **Azure SQL Database** con 2 bases de datos (TasksDb, FilesDb)
 - ✅ **Sistema de autenticación y autorización** (JWT con 2 roles: Admin, User)
 - ✅ **Azure Storage Account** (Blob Storage para archivos)
@@ -81,16 +82,22 @@ AzureContainerApp/
 │   │   │   ├── Program.cs
 │   │   │   ├── Dockerfile
 │   │   │   └── ...
-│   │   └── FilesApi/              ✅ Web API + Blob Storage
-│   │       ├── Controllers/
-│   │       │   ├── AuthController.cs
-│   │       │   └── FilesController.cs
+│   │   ├── FilesApi/              ✅ Web API + Blob Storage
+│   │   │   ├── Controllers/
+│   │   │   │   ├── AuthController.cs
+│   │   │   │   └── FilesController.cs
+│   │   │   ├── Data/
+│   │   │   │   └── FilesDbContext.cs
+│   │   │   ├── Services/
+│   │   │   │   ├── AuthService.cs
+│   │   │   │   └── BlobStorageService.cs
+│   │   │   ├── Program.cs
+│   │   │   ├── Dockerfile
+│   │   │   └── ...
+│   │   └── FileProcessorJob/      ✅ Scheduled Job (cada 10 min)
+│   │       ├── Program.cs         - Procesa archivos subidos
 │   │       ├── Data/
 │   │       │   └── FilesDbContext.cs
-│   │       ├── Services/
-│   │       │   ├── AuthService.cs
-│   │       │   └── BlobStorageService.cs
-│   │       ├── Program.cs
 │   │       ├── Dockerfile
 │   │       └── ...
 │   ├── shared/
@@ -131,6 +138,14 @@ AzureContainerApp/
 - `GET /api/files/{id}/download` - Descargar archivo
 - `DELETE /api/files/{id}` - Eliminar archivo
 - Integración con Azure Blob Storage
+
+### ⚙️ File Processor Job
+- Job programado ejecutado cada 10 minutos
+- Procesa archivos subidos al Storage Account
+- Copia archivos con sufijo `-processed-{timestamp}`
+- Elimina archivos originales después del procesamiento
+- Actualiza metadata en la base de datos FilesDb
+- Conecta a Azure SQL y Azure Blob Storage
 
 ### 🗄️ Base de Datos
 - Entity Framework Core 8

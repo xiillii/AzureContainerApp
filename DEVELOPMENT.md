@@ -42,6 +42,25 @@ dotnet ef database update
 | admin   | Preimitation{7{!3#   | Admin |
 | user    | Chronoscopically$0/(8.    | User  |
 
+### 4. Ejecutar File Processor Job manualmente
+
+El File Processor Job está configurado para ejecutarse manualmente durante desarrollo:
+
+```bash
+# Ejecutar el job una vez
+docker-compose run --rm file-processor-job
+
+# Ver logs del último run
+docker-compose logs file-processor-job
+```
+
+**¿Qué hace el File Processor Job?**
+- Lista todos los archivos en el contenedor `files` de Azurite
+- Procesa archivos que NO tienen el sufijo `-processed`
+- Copia cada archivo con el nombre: `{nombre}-processed-{timestamp}.{ext}`
+- Elimina el archivo original
+- Actualiza la metadata en la base de datos FilesDb
+
 ## 🛠️ Desarrollo sin Docker
 
 ### Prerrequisitos

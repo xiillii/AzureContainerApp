@@ -85,7 +85,13 @@ docker push ${ACR_SERVER}/tasks-web:latest
 # Files Web
 docker build --platform linux/amd64 -t ${ACR_SERVER}/files-web:latest -f srcs/frontends/FilesWeb/Dockerfile ./srcs
 docker push ${ACR_SERVER}/files-web:latest
+
+# File Processor Job
+docker build --platform linux/amd64 -t ${ACR_SERVER}/file-processor-job:latest -f srcs/backends/FileProcessorJob/Dockerfile ./srcs
+docker push ${ACR_SERVER}/file-processor-job:latest
 ```
+
+**Nota:** El File Processor Job es un Container App Job que se ejecuta según un cron schedule (`*/10 * * * *` - cada 10 minutos). Procesa archivos subidos, los copia con un sufijo `-processed-{timestamp}`, elimina los originales y actualiza la metadata en FilesDb.
 
 ### 4. Update Container Apps with Images
 
@@ -225,6 +231,35 @@ The Bicep deployment will create:
 6. **Application Insights** - Monitoring and diagnostics
 7. **Log Analytics Workspace** - Centralized logging
 8. **4 Container Apps** - tasks-api, files-api, tasks-web, files-web
+9. **1 Container App Job** - file-processor-job (scheduled every 10 minutes)
+
+## Container App Jobs
+
+El File Processor Job se ejecuta automáticamente según el cron schedule definido en Bicep (`*/10 * * * *`):
+
+```bash
+# Ver el estado del job
+az containerapp job show \
+  --name file-processor-job \
+  --resource-group $RESOURCE_GROUP
+
+# Ver ejecuciones del job
+az containerapp job execution list \
+  --name file-processor-job \
+  --resource-group $RESOURCE_GROUP \
+  --output table
+
+# Ver logs de una ejecución específica
+az containerapp job logs show \
+  --name file-processor-job \
+  --resource-group $RESOURCE_GROUP \
+  --execution {execution-name}
+
+# Ejecutar el job manualmente (sin esperar al cron)
+az containerapp job start \
+  --name file-processor-job \
+  --resource-group $RESOURCE_GROUP
+```
 
 ## Estimated Cost
 
