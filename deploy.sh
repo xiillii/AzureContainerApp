@@ -60,6 +60,10 @@ echo "  → Construyendo Files Web..."
 docker build --platform linux/amd64 -f frontends/FilesWeb/Dockerfile -t ${ACR_NAME}/files-web:latest .
 docker push ${ACR_NAME}/files-web:latest
 
+echo "  → Construyendo File Processor Job..."
+docker build --platform linux/amd64 -f backends/FileProcessorJob/Dockerfile -t ${ACR_NAME}/file-processor-job:latest .
+docker push ${ACR_NAME}/file-processor-job:latest
+
 cd ..
 
 # 6. Desplegar Container Apps ahora que las imágenes existen

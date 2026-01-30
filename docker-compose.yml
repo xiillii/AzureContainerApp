@@ -96,6 +96,23 @@ services:
     depends_on:
       - files-api
 
+  file-processor-job:
+    build:
+      context: ./srcs
+      dockerfile: backends/FileProcessorJob/Dockerfile
+    container_name: poc-file-processor-job
+    environment:
+      AzureStorage__ConnectionString: "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;"
+      AzureStorage__ContainerName: "files"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=FilesDb;User Id=sa;Password=P@ssw0rd123!;TrustServerCertificate=True;"
+    depends_on:
+      - azurite
+      - sqlserver
+    # Para desarrollo, ejecutarlo manualmente cuando se necesite en lugar de un cron
+    # Para probarlo: docker-compose run --rm file-processor-job
+    profiles:
+      - manual
+
 volumes:
   sqldata:
   azurite-data:

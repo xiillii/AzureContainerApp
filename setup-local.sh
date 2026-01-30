@@ -70,7 +70,13 @@ echo "6️⃣  Levantando todos los servicios..."
 cd "$BASE_DIR"
 docker-compose up -d
 
-# 7. Mostrar estado
+# 7. Construir FileProcessorJob (no se levanta automáticamente porque es manual)
+echo ""
+echo "7️⃣  Construyendo FileProcessorJob..."
+docker-compose build file-processor-job
+echo "   ✓ FileProcessorJob listo (ejecutar manualmente: docker-compose run --rm file-processor-job)"
+
+# 8. Mostrar estado
 echo ""
 echo "========================================="
 echo "✅ Configuración completada!"
@@ -87,6 +93,10 @@ echo ""
 echo "🔐 Usuarios de prueba:"
 echo "  admin / Preimitation{7{!3# (Admin)"
 echo "  user / Chronoscopically$0/(8. (User)"
+echo ""
+echo "🛠️  FileProcessorJob:"
+echo "  Ejecutar manualmente: docker-compose run --rm file-processor-job"
+echo "  Ver logs: docker-compose logs file-processor-job"
 echo ""
 echo "📝 Logs: docker-compose logs -f [service-name]"
 echo "🛑 Detener: docker-compose down"

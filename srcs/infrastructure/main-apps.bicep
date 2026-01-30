@@ -324,6 +324,72 @@ resource filesWebApp 'Microsoft.App/containerApps@2023-05-01' = {
   }
 }
 
+// File Processor Job (ejecuta cada 10 minutos)
+resource fileProcessorJob 'Microsoft.App/jobs@2023-05-01' = {
+  name: 'file-processor-job'
+  location: location
+  properties: {
+    environmentId: containerAppEnv.id
+    configuration: {
+      scheduleTriggerConfig: {
+        cronExpression: '*/10 * * * *' // Cada 10 minutos
+        parallelism: 1
+        replicaCompletionCount: 1
+      }
+      replicaTimeout: 300 // 5 minutos timeout
+      replicaRetryLimit: 1
+      triggerType: 'Schedule'
+      registries: [
+        {
+          server: acr.properties.loginServer
+          username: acr.listCredentials().username
+          passwordSecretRef: 'acr-password'
+        }
+      ]
+      secrets: [
+        {
+          name: 'acr-password'
+          value: acr.listCredentials().passwords[0].value
+        }
+        {
+          name: 'storage-connection-string'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+        }
+        {
+          name: 'sql-connection-string'
+          value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${filesDbName};User ID=${sqlAdminLogin};Password=${sqlAdminPassword};Encrypt=True;TrustServerCertificate=False;'
+        }
+      ]
+    }
+    template: {
+      containers: [
+        {
+          name: 'file-processor'
+          image: '${acr.properties.loginServer}/file-processor-job:latest'
+          resources: {
+            cpu: json('0.25')
+            memory: '0.5Gi'
+          }
+          env: [
+            {
+              name: 'AzureStorage__ConnectionString'
+              secretRef: 'storage-connection-string'
+            }
+            {
+              name: 'AzureStorage__ContainerName'
+              value: 'files'
+            }
+            {
+              name: 'ConnectionStrings__DefaultConnection'
+              secretRef: 'sql-connection-string'
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+
 // Outputs
 output tasksWebUrl string = 'https://${tasksWebApp.properties.configuration.ingress.fqdn}'
 output filesWebUrl string = 'https://${filesWebApp.properties.configuration.ingress.fqdn}'
