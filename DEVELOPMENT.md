@@ -59,8 +59,10 @@ npm install -g azurite
 ### 2. Iniciar Azurite
 
 ```bash
-azurite --location ./azurite-data
+azurite --location ./azurite-data --skipApiVersionCheck
 ```
+
+**Nota:** El flag `--skipApiVersionCheck` es necesario para evitar errores de compatibilidad de versión de API con los SDKs más recientes de Azure Storage.
 
 ### 3. Actualizar cadenas de conexión
 
@@ -198,6 +200,26 @@ O reconstruir un servicio específico:
 docker-compose build tasks-api
 docker-compose up -d tasks-api
 ```
+
+## 🔐 Arquitectura de Autenticación
+
+El proyecto usa JWT con sesión HTTP para mantener el estado de autenticación:
+
+### Flujo de Autenticación
+
+1. **Login**: Usuario envía credenciales → API valida → Retorna JWT token
+2. **Sesión**: Frontend almacena token en `HttpContext.Session` (no en campo privado)
+3. **Requests**: Cada llamada a API incluye token en header `Authorization: Bearer <token>`
+
+### Componentes Clave
+
+- **AuthService**: Maneja login/logout usando `IHttpContextAccessor` para sesión
+- **API Clients**: Inyectan `AuthService` y agregan token automáticamente
+- **Session Middleware**: Configurado en `Program.cs` con timeout de 2 horas
+
+### ⚠️ Importante
+
+Los servicios son **Scoped** - se crean por cada HTTP request. Por eso el token debe guardarse en sesión, no en campos de clase privados.
 
 ## 🧹 Limpieza
 

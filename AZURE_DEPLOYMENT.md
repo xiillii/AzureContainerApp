@@ -67,20 +67,23 @@ az acr login --name $ACR_NAME
 # Build and push images
 ACR_SERVER="${ACR_NAME}.azurecr.io"
 
+# IMPORTANTE: Azure Container Apps requiere linux/amd64
+# En Macs con Apple Silicon (M1/M2/M3), agregar --platform linux/amd64
+
 # Tasks API
-docker build -t ${ACR_SERVER}/tasks-api:latest -f srcs/backends/TasksApi/Dockerfile ./srcs
+docker build --platform linux/amd64 -t ${ACR_SERVER}/tasks-api:latest -f srcs/backends/TasksApi/Dockerfile ./srcs
 docker push ${ACR_SERVER}/tasks-api:latest
 
 # Files API
-docker build -t ${ACR_SERVER}/files-api:latest -f srcs/backends/FilesApi/Dockerfile ./srcs
+docker build --platform linux/amd64 -t ${ACR_SERVER}/files-api:latest -f srcs/backends/FilesApi/Dockerfile ./srcs
 docker push ${ACR_SERVER}/files-api:latest
 
 # Tasks Web
-docker build -t ${ACR_SERVER}/tasks-web:latest -f srcs/frontends/TasksWeb/Dockerfile ./srcs
+docker build --platform linux/amd64 -t ${ACR_SERVER}/tasks-web:latest -f srcs/frontends/TasksWeb/Dockerfile ./srcs
 docker push ${ACR_SERVER}/tasks-web:latest
 
 # Files Web
-docker build -t ${ACR_SERVER}/files-web:latest -f srcs/frontends/FilesWeb/Dockerfile ./srcs
+docker build --platform linux/amd64 -t ${ACR_SERVER}/files-web:latest -f srcs/frontends/FilesWeb/Dockerfile ./srcs
 docker push ${ACR_SERVER}/files-web:latest
 ```
 

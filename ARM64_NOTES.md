@@ -33,6 +33,28 @@ sqlserver:
     - SA_PASSWORD=P@ssw0rd123!
 ```
 
+## Despliegue a Azure desde Apple Silicon
+
+Azure Container Apps requiere imágenes `linux/amd64`. Al construir desde un Mac con Apple Silicon:
+
+```bash
+# Agregar --platform linux/amd64 a todos los builds
+docker build --platform linux/amd64 -t myimage:latest .
+```
+
+Docker usará emulación para construir la imagen en la arquitectura correcta. El proceso será más lento pero garantiza compatibilidad con Azure.
+
+## Azurite y Versiones de API
+
+Si encuentras errores sobre versiones de API no soportadas:
+
+```bash
+# En docker-compose.yml
+command: "azurite --blobHost 0.0.0.0 --skipApiVersionCheck -l /data"
+```
+
+Esto permite que los SDKs más recientes de Azure Storage funcionen con versiones anteriores de Azurite.
+
 ## Referencias
 
 - [Azure SQL Edge en Docker](https://hub.docker.com/_/microsoft-azure-sql-edge)
