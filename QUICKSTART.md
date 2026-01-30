@@ -70,8 +70,8 @@ docker-compose ps
 
 | Usuario | Contraseña | Rol   |
 |---------|------------|-------|
-| admin   | admin123   | Admin |
-| user    | user123    | User  |
+| admin   | Preimitation{7{!3#   | Admin |
+| user    | Chronoscopically$0/(8.    | User  |
 
 ## 🧪 Probar con cURL
 
@@ -80,7 +80,7 @@ docker-compose ps
 ```bash
 curl -X POST http://localhost:5001/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}'
+  -d '{"username":"admin","password":"Preimitation{7{!3#"}'
 ```
 
 Guarda el `token` del response.

@@ -34,12 +34,12 @@ public class AuthService : IAuthService
 
         // Simple password validation (for demo - in production use BCrypt.Net.Verify)
         // For now, accept the password if username matches (demo purposes only)
-        // Real passwords: demo123, admin123, user123
+        // Real passwords: Redistributing}5{{6%, Preimitation{7{!3#, Chronoscopically$0/(8.
         var validPasswords = new Dictionary<string, string>
         {
-            { "demo", "demo123" },
-            { "admin", "admin123" },
-            { "user", "user123" }
+            { "demo", "Redistributing}5{{6%" },
+            { "admin", "Preimitation{7{!3#" },
+            { "user", "Chronoscopically$0/(8." }
         };
 
         if (!validPasswords.TryGetValue(user.Username, out var expectedPassword) || 

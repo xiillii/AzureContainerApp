@@ -329,7 +329,7 @@ This is a microservices-based proof of concept for Azure Container Apps, consist
 ## Security Considerations
 
 ### Current Implementation (POC/Demo)
-- ⚠️ **Passwords**: Simple validation with hardcoded mapping (demo/demo123, etc.)
+- ⚠️ **Passwords**: Simple validation with hardcoded mapping (demo/Redistributing}5{{6%, etc.)
 - ⚠️ **Password Hashing**: BCrypt hashes in database but not validated (placeholder)
 - ⚠️ **HTTPS**: Disabled in Docker containers (HTTP only)
 - ⚠️ **Secrets**: JWT secret in configuration (not externalized)
@@ -406,9 +406,9 @@ Azure Front Door / Application Gateway
 - **Azurite Blob**: localhost:10000
 
 **Demo Credentials:**
-- demo / demo123
-- admin / admin123
-- user / user123
+- demo / Redistributing}5{{6%
+- admin / Preimitation{7{!3#
+- user / Chronoscopically$0/(8.
 
 ---
 

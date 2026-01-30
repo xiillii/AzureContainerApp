@@ -178,8 +178,8 @@ El sistema usa **JWT (JSON Web Tokens)** para autenticación. Hay 2 usuarios pre
 
 | Usuario | Contraseña | Rol   |
 |---------|------------|-------|
-| admin   | admin123   | Admin |
-| user    | user123    | User  |
+| admin   | Preimitation{7{!3#   | Admin |
+| user    | Chronoscopically$0/(8.    | User  |
 
 ## 🧪 Desarrollo Local
 

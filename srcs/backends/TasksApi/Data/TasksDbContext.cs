@@ -40,7 +40,7 @@ public class TasksDbContext : DbContext
                 Id = 1,
                 Username = "demo",
                 Email = "demo@example.com",
-                // Password: "demo123" (you should use a proper password hashing in production)
+                // Password: "Redistributing}5{{6%" (you should use a proper password hashing in production)
                 PasswordHash = "$2a$11$vZLp.X5K3B3qN8I3KJ9YpO8K9xBxQh8gLI5Y7zR8pF9h1L8N2P3Q4",
                 Role = "User",
                 CreatedAt = DateTime.UtcNow
@@ -50,7 +50,7 @@ public class TasksDbContext : DbContext
                 Id = 2,
                 Username = "admin",
                 Email = "admin@example.com",
-                // Password: "admin123"
+                // Password: "Preimitation{7{!3#"
                 PasswordHash = "$2a$11$vZLp.X5K3B3qN8I3KJ9YpO8K9xBxQh8gLI5Y7zR8pF9h1L8N2P3Q5",
                 Role = "Admin",
                 CreatedAt = DateTime.UtcNow
@@ -60,7 +60,7 @@ public class TasksDbContext : DbContext
                 Id = 3,
                 Username = "user",
                 Email = "user@example.com",
-                // Password: "user123"
+                // Password: "Chronoscopically$0/(8."
                 PasswordHash = "$2a$11$vZLp.X5K3B3qN8I3KJ9YpO8K9xBxQh8gLI5Y7zR8pF9h1L8N2P3Q6",
                 Role = "User",
                 CreatedAt = DateTime.UtcNow

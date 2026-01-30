@@ -25,7 +25,7 @@
 
 ### Configuration
 - API Base URL: `http://localhost:5001` (development)
-- Default credentials: demo / demo123
+- Default credentials: demo / Redistributing}5{{6%
 
 ---
 
@@ -56,7 +56,7 @@
 
 ### Configuration
 - API Base URL: `http://localhost:5002` (development)
-- Default credentials: demo / demo123
+- Default credentials: demo / Redistributing}5{{6%
 - Max file size: 10MB
 
 ### JavaScript Utilities
@@ -122,10 +122,10 @@ To test the complete system:
 
 1. **Start all services**: `docker-compose up -d`
 2. **Access TasksWeb**: http://localhost:5003
-   - Login with demo / demo123
+   - Login with demo / Redistributing}5{{6%
    - Create, edit, complete, and delete tasks
 3. **Access FilesWeb**: http://localhost:5004
-   - Login with demo / demo123
+   - Login with demo / Redistributing}5{{6%
    - Upload files, download them, and delete them
 4. **Monitor APIs**: Check Swagger UIs for backend testing
 

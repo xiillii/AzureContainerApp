@@ -113,7 +113,7 @@ AzureContainerApp/
 
 ### 🔐 Autenticación y Autorización
 - Sistema JWT completo
-- 2 usuarios precargados (admin/admin123, user/user123)
+- 2 usuarios precargados (admin/Preimitation{7{!3#, user/Chronoscopically$0/(8.)
 - Roles: Admin, User
 - Endpoints protegidos con `[Authorize]`
 
@@ -263,11 +263,11 @@ cd ../FilesApi && dotnet ef database update
 ### Usuarios de Prueba
 ```
 Usuario: admin
-Password: admin123
+Password: Preimitation{7{!3#
 Rol: Admin
 
 Usuario: user
-Password: user123
+Password: Chronoscopically$0/(8.
 Rol: User
 ```
 
