@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace FilesWeb.Services;
 
@@ -6,16 +7,18 @@ public class AuthService
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<AuthService> _logger;
-    private string? _token;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private const string TokenSessionKey = "AuthToken";
 
-    public AuthService(HttpClient httpClient, ILogger<AuthService> logger)
+    public AuthService(HttpClient httpClient, ILogger<AuthService> logger, IHttpContextAccessor httpContextAccessor)
     {
         _httpClient = httpClient;
         _logger = logger;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    public bool IsAuthenticated => !string.IsNullOrEmpty(_token);
-    public string? Token => _token;
+    public bool IsAuthenticated => !string.IsNullOrEmpty(Token);
+    public string? Token => _httpContextAccessor.HttpContext?.Session.GetString(TokenSessionKey);
 
     public async Task<bool> LoginAsync(string username, string password)
     {
@@ -32,9 +35,9 @@ public class AuthService
                 var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
                 if (result != null)
                 {
-                    _token = result.Token;
+                    _httpContextAccessor.HttpContext?.Session.SetString(TokenSessionKey, result.Token);
                     _httpClient.DefaultRequestHeaders.Authorization = 
-                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", result.Token);
                     return true;
                 }
             }
@@ -51,7 +54,7 @@ public class AuthService
 
     public void Logout()
     {
-        _token = null;
+        _httpContextAccessor.HttpContext?.Session.Remove(TokenSessionKey);
         _httpClient.DefaultRequestHeaders.Authorization = null;
     }
 

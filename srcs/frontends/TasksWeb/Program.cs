@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromHours(2);
@@ -13,7 +14,7 @@ builder.Services.AddSession(options =>
 
 // Configure HttpClient for API calls
 var apiBaseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl") ?? "http://tasks-api:8080";
-builder.Services.AddHttpClient<TasksApiClient>(client =>
+builder.Services.AddHttpClient<TasksApiClient>((sp, client) =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
 });
@@ -25,7 +26,8 @@ builder.Services.AddScoped<AuthService>(sp =>
     var httpClient = httpClientFactory.CreateClient();
     httpClient.BaseAddress = new Uri(apiBaseUrl);
     var logger = sp.GetRequiredService<ILogger<AuthService>>();
-    return new AuthService(httpClient, logger);
+    var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+    return new AuthService(httpClient, logger, httpContextAccessor);
 });
 
 var app = builder.Build();

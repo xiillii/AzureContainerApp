@@ -7,17 +7,30 @@ public class TasksApiClient
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<TasksApiClient> _logger;
+    private readonly AuthService _authService;
 
-    public TasksApiClient(HttpClient httpClient, ILogger<TasksApiClient> logger)
+    public TasksApiClient(HttpClient httpClient, ILogger<TasksApiClient> logger, AuthService authService)
     {
         _httpClient = httpClient;
         _logger = logger;
+        _authService = authService;
+    }
+
+    private void SetAuthHeader()
+    {
+        var token = _authService.Token;
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
     }
 
     public async Task<List<TaskItem>?> GetTasksAsync()
     {
         try
         {
+            SetAuthHeader();
             return await _httpClient.GetFromJsonAsync<List<TaskItem>>("/api/tasks");
         }
         catch (Exception ex)
@@ -31,6 +44,7 @@ public class TasksApiClient
     {
         try
         {
+            SetAuthHeader();
             return await _httpClient.GetFromJsonAsync<TaskItem>($"/api/tasks/{id}");
         }
         catch (Exception ex)
@@ -44,6 +58,7 @@ public class TasksApiClient
     {
         try
         {
+            SetAuthHeader();
             var response = await _httpClient.PostAsJsonAsync("/api/tasks", task);
             return response.IsSuccessStatusCode;
         }
@@ -58,6 +73,7 @@ public class TasksApiClient
     {
         try
         {
+            SetAuthHeader();
             var response = await _httpClient.PutAsJsonAsync($"/api/tasks/{id}", task);
             return response.IsSuccessStatusCode;
         }
@@ -72,6 +88,7 @@ public class TasksApiClient
     {
         try
         {
+            SetAuthHeader();
             var response = await _httpClient.DeleteAsync($"/api/tasks/{id}");
             return response.IsSuccessStatusCode;
         }
