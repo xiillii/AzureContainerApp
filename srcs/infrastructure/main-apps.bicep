@@ -36,6 +36,12 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2023-05-01' existing
 // JWT Secret
 var jwtSecret = 'your-secret-key-min-32-chars-long!-change-in-production'
 
+// SQL Server credentials (must match main-infra.bicep)
+var sqlAdminLogin = 'sqladmin'
+var sqlAdminPassword = 'P@ssw0rd123!'
+var tasksDbName = 'TasksDb'
+var filesDbName = 'FilesDb'
+
 // Tasks API Container App
 resource tasksApiApp 'Microsoft.App/containerApps@2023-05-01' = {
   name: 'tasks-api'
