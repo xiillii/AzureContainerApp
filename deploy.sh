@@ -18,25 +18,39 @@ echo "========================================="
 echo "📦 Creando grupo de recursos..."
 az group create --name $RESOURCE_GROUP --location $LOCATION
 
-# 2. Desplegar infraestructura
-echo "🏗️  Desplegando infraestructura con Bicep..."
+# 2. Desplegar infraestructura base (sin Container Apps)
+echo "🏗️  Desplegando infraestructura base con Bicep..."
 az deployment group create \
   --resource-group $RESOURCE_GROUP \
   --template-file srcs/infrastructure/main.bicep \
-  --parameters appName=$APP_NAME
+  --parameters appName=$APP_NAME \
+  || true  # Continuar si falla porque las Container Apps no tienen imágenes aún
 
 # 3. Obtener ACR login server
 echo "🔑 Obteniendo información del Container Registry..."
+# Intentar obtener del deployment output primero
 ACR_NAME=$(az deployment group show \
   --resource-group $RESOURCE_GROUP \
   --name main \
-  --query properties.outputs.acrLoginServer.value -o tsv)
+  --query properties.outputs.acrLoginServer.value -o tsv 2>/dev/null || true)
+
+# Si no está disponible, buscar el ACR en el resource group
+if [ -z "$ACR_NAME" ]; then
+  echo "  ⚠️  Output no disponible, buscando ACR en el resource group..."
+  ACR_NAME=$(az acr list --resource-group $RESOURCE_GROUP --query "[0].loginServer" -o tsv)
+fi
+
+if [ -z "$ACR_NAME" ]; then
+  echo "❌ Error: No se pudo encontrar el Azure Container Registry"
+  exit 1
+fi
 
 echo "ACR: $ACR_NAME"
 
 # 4. Login en ACR
 echo "🔐 Autenticando en Azure Container Registry..."
-az acr login --name $(echo $ACR_NAME | cut -d'.' -f1)
+ACR_SHORT_NAME=$(echo $ACR_NAME | cut -d'.' -f1)
+az acr login --name $ACR_SHORT_NAME
 
 # 5. Construir y publicar imágenes
 echo "🐳 Construyendo y publicando imágenes Docker..."
@@ -44,29 +58,29 @@ echo "🐳 Construyendo y publicando imágenes Docker..."
 cd srcs
 
 echo "  → Construyendo Tasks API..."
-docker build -f backends/TasksApi/Dockerfile -t ${ACR_NAME}/tasks-api:latest .
+docker build --platform linux/amd64 -f backends/TasksApi/Dockerfile -t ${ACR_NAME}/tasks-api:latest .
 docker push ${ACR_NAME}/tasks-api:latest
 
 echo "  → Construyendo Files API..."
-docker build -f backends/FilesApi/Dockerfile -t ${ACR_NAME}/files-api:latest .
+docker build --platform linux/amd64 -f backends/FilesApi/Dockerfile -t ${ACR_NAME}/files-api:latest .
 docker push ${ACR_NAME}/files-api:latest
 
 echo "  → Construyendo Tasks Web..."
-docker build -f frontends/TasksWeb/Dockerfile -t ${ACR_NAME}/tasks-web:latest .
+docker build --platform linux/amd64 -f frontends/TasksWeb/Dockerfile -t ${ACR_NAME}/tasks-web:latest .
 docker push ${ACR_NAME}/tasks-web:latest
 
 echo "  → Construyendo Files Web..."
-docker build -f frontends/FilesWeb/Dockerfile -t ${ACR_NAME}/files-web:latest .
+docker build --platform linux/amd64 -f frontends/FilesWeb/Dockerfile -t ${ACR_NAME}/files-web:latest .
 docker push ${ACR_NAME}/files-web:latest
 
 cd ..
 
-# 6. Reiniciar Container Apps
-echo "🔄 Reiniciando Container Apps..."
-az containerapp restart --name tasks-api --resource-group $RESOURCE_GROUP
-az containerapp restart --name files-api --resource-group $RESOURCE_GROUP
-az containerapp restart --name tasks-web --resource-group $RESOURCE_GROUP
-az containerapp restart --name files-web --resource-group $RESOURCE_GROUP
+# 6. Re-desplegar Container Apps ahora que las imágenes existen
+echo "🚀 Desplegando Container Apps con las imágenes..."
+az deployment group create \
+  --resource-group $RESOURCE_GROUP \
+  --template-file srcs/infrastructure/main.bicep \
+  --parameters appName=$APP_NAME
 
 # 7. Mostrar URLs
 echo ""

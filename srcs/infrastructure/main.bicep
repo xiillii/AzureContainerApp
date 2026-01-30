@@ -348,7 +348,7 @@ resource tasksWebApp 'Microsoft.App/containerApps@2023-05-01' = {
           }
           env: [
             {
-              name: 'TasksApiUrl'
+              name: 'ApiBaseUrl'
               value: 'https://${tasksApiApp.properties.configuration.ingress.fqdn}'
             }
             {
@@ -407,7 +407,7 @@ resource filesWebApp 'Microsoft.App/containerApps@2023-05-01' = {
           }
           env: [
             {
-              name: 'FilesApiUrl'
+              name: 'ApiBaseUrl'
               value: 'https://${filesApiApp.properties.configuration.ingress.fqdn}'
             }
             {
