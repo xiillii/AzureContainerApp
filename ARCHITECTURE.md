@@ -8,8 +8,8 @@ This is a microservices-based proof of concept for Azure Container Apps, consist
 graph TB
     Users[Internet/Users]
     
-    Users -->|Port 5003| TasksWeb[TasksWeb Frontend<br/>Blazor Server<br/>- Login UI<br/>- Task Management]
-    Users -->|Port 5004| FilesWeb[FilesWeb Frontend<br/>Blazor Server<br/>- Login UI<br/>- File Upload/Download]
+    Users -->|Port 5003| TasksWeb[TasksWeb Frontend<br/>ASP.NET MVC<br/>- Login UI<br/>- Task Management]
+    Users -->|Port 5004| FilesWeb[FilesWeb Frontend<br/>ASP.NET MVC<br/>- Login UI<br/>- File Upload/Download]
     
     TasksWeb -->|Port 8080| TasksApi[TasksApi<br/>REST API<br/>- Auth<br/>- CRUD Tasks]
     FilesWeb -->|Port 8080| FilesApi[FilesApi<br/>REST API<br/>- Auth<br/>- File Upload/Download]
@@ -62,7 +62,7 @@ graph TB
 
 ### 2. FilesWeb Frontend (Port 5004)
 
-**Technology:** ASP.NET Core 8.0 Blazor Server
+**Technology:** ASP.NET Core 8.0 MVC
 
 **Purpose:** Web application for file management
 
@@ -314,7 +314,7 @@ sequenceDiagram
 ## Technology Stack
 
 ### Frontend
-- **Framework**: ASP.NET Core 8.0 Blazor Server
+- **Framework**: ASP.NET Core 8.0 MVC
 - **UI**: Bootstrap 5 + Bootstrap Icons
 - **Rendering**: Interactive Server mode (WebSocket connection)
 - **HTTP Client**: Built-in HttpClient with typed clients
@@ -436,8 +436,8 @@ graph TB
 3. **RESTful APIs**: Standard HTTP methods (GET, POST, PUT, DELETE)
 4. **Scheduled Jobs**: Container App Jobs with cron scheduling for automated processing
 5. **Event-Driven Processing**: Automated file processing workflow
-4. **Blazor Server**: Real-time UI with SignalR WebSocket connection
-5. **Entity Framework Core**: Code-first database with migrations
+6. **ASP.NET MVC**: Server-rendered UI with modern web standards
+7. **Entity Framework Core**: Code-first database with migrations
 6. **Azure Blob Storage**: Decoupled file storage from metadata
 7. **Docker Compose**: Multi-container orchestration for local development
 8. **Infrastructure as Code**: Bicep templates for Azure deployment

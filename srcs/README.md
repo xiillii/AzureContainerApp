@@ -50,8 +50,8 @@ Internet
 ```
 srcs/
 ├── frontends/
-│   ├── TasksWeb/           # Blazor Web App para gestión de tareas
-│   └── FilesWeb/           # Blazor Web App para gestión de archivos
+│   ├── TasksWeb/           # ASP.NET MVC App para gestión de tareas
+│   └── FilesWeb/           # ASP.NET MVC App para gestión de archivos
 ├── backends/
 │   ├── TasksApi/           # API REST para tareas (CRUD + Auth)
 │   └── FilesApi/           # API REST para archivos (Upload/Download + Auth)
@@ -297,7 +297,7 @@ az group delete --name rg-containerapp-poc --yes --no-wait
 ## 📚 Tecnologías Utilizadas
 
 - **.NET 8.0**: Runtime y SDK
-- **Blazor Web App**: Frontends interactivos
+- **ASP.NET MVC**: Frontends interactivos
 - **ASP.NET Core Web API**: Backends RESTful
 - **Entity Framework Core**: ORM para Azure SQL
 - **Azure Container Apps**: Hosting de microservicios

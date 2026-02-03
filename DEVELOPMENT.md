@@ -300,7 +300,7 @@ environment:
 
 ## 🎯 Próximos pasos
 
-- Implementar UI en Blazor para Tasks y Files
+- Implementar UI en ASP.NET MVC para Tasks y Files
 - Agregar paginación en APIs
 - Implementar refresh tokens
 - Agregar tests unitarios

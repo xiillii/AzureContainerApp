@@ -30,7 +30,7 @@ Todos los requerimientos han sido implementados exitosamente.
          ┌───────▼──────┐  ┌───▼──────────┐
          │  Tasks Web   │  │  Files Web   │
          │  (Público)   │  │  (Público)   │
-         │  Blazor 8.x  │  │  Blazor 8.x  │
+         │  ASP.NET MVC │  │  ASP.NET MVC │
          └───────┬──────┘  └───┬──────────┘
                  │              │
     ┌────────────▼──────────────▼────────────┐
@@ -64,10 +64,10 @@ Todos los requerimientos han sido implementados exitosamente.
 AzureContainerApp/
 ├── src/
 │   ├── frontends/
-│   │   ├── TasksWeb/              ✅ Blazor Web App (Público)
+│   │   ├── TasksWeb/              ✅ ASP.NET MVC App (Público)
 │   │   │   ├── Dockerfile
 │   │   │   └── ...
-│   │   └── FilesWeb/              ✅ Blazor Web App (Público)
+│   │   └── FilesWeb/              ✅ ASP.NET MVC App (Público)
 │   │       ├── Dockerfile
 │   │       └── ...
 │   ├── backends/
@@ -198,7 +198,7 @@ cd ../FilesApi && dotnet ef database update
 | Componente | Tecnología |
 |------------|-----------|
 | Runtime | .NET 8.0 |
-| Frontend | Blazor Web App |
+| Frontend | ASP.NET MVC |
 | Backend | ASP.NET Core Web API |
 | ORM | Entity Framework Core 8 |
 | Base de Datos | Azure SQL Database |
@@ -252,7 +252,7 @@ cd ../FilesApi && dotnet ef database update
 
 ## 🎓 Próximos Pasos Sugeridos
 
-1. **UI Blazor**: Implementar páginas Razor para Tasks y Files
+1. **UI MVC**: Implementar páginas Razor para Tasks y Files
 2. **Paginación**: Agregar paginación a listados
 3. **Refresh Tokens**: Implementar refresh tokens en JWT
 4. **Testing**: Agregar tests unitarios e integración
